@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "script": "src/main.ts",
+            "instances": "max",
+            "exec_mode": "cluster"
+        }
+    ]
+}
