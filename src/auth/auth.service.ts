@@ -1,41 +1,40 @@
-import { Injectable } from "@nestjs/common"
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
-import { InjectRepository } from "@nestjs/typeorm"
-import { Repository } from "typeorm"
 import { UserService } from "../user/user.service"
+import { IUser } from "../user/dto/index.dto"
 import { User } from "../user/user.entity"
 
 @Injectable()
 export class AuthService {
     constructor(
-        private usersService: UserService,
+        private userService: UserService,
         private jwtService: JwtService,
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>) { }
+    ) { }
 
-    signup(user: User) {
-        // check if user doesnt exists
-        const payload = { username: user.email, sub: user.id }
-
-        return {
-            access_token: this.jwtService.sign(payload),
+    async signup(user: IUser) {
+        const isExists = await this.userService.isExists(user.email)
+        if (isExists) {
+            throw new HttpException("User with such email alrewady registered", HttpStatus.BAD_REQUEST)
         }
+
+        await this.userService.create(user)
+        const payload = { user: user.email }
+        return { access_token: this.jwtService.sign(payload) }
     }
 
-    signin(user: User) {
-        // check if user valid
-        const payload = { username: user.email, sub: user.id }
-        return {
-            access_token: this.jwtService.sign(payload),
+    async signin(user: IUser) {
+        const neededUser = await this.userService.findOne(user)
+        if (!neededUser) {
+            throw new HttpException("Invalid email or password", HttpStatus.BAD_REQUEST)
         }
+
+        const payload = { user: user.email }
+        return { access_token: this.jwtService.sign(payload) }
     }
 
-    async validateUser(email: string, password: string): Promise<any> {
-        // const user = await this.usersService.findOne(new User(email, password))
-        // if (user && user.password === pass) {
-        //     const { password, ...result } = user;
-        //     return result;
-        // }
-        // return null;
+
+    async validateUser(email: string): Promise<User> {
+        return await this.userService.findByEmail(email)
     }
+
 }

@@ -8,6 +8,7 @@ import { Currency } from "./currency/currency.entity"
 import { CurrencyModule } from "./currency/currency.module"
 import { ParserModule } from "./parser/parser.module"
 import { UserModule } from "./user/user.module"
+import { AuthModule } from "./auth/auth.module"
 
 
 @Module({
@@ -21,7 +22,7 @@ import { UserModule } from "./user/user.module"
       useUnifiedTopology: true,
       useNewUrlParser: true
     }),
-    // AuthModule,
+    AuthModule,
     HttpModule,
     CurrencyModule,
     ParserModule,
