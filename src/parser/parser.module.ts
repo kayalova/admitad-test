@@ -1,15 +1,10 @@
-import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
-import { ParserController } from './parser.controller';
-import { ParserProcessor } from './parser.processor';
+import { Module, HttpModule } from "@nestjs/common"
+import { ParserService } from "./parser.service"
+import { CurrencyModule } from "../currency/currency.module"
 
 @Module({
-    imports: [
-        BullModule.registerQueue({
-            name: 'parser',
-        }),
-    ],
-    controllers: [ParserController],
-    providers: [ParserProcessor],
+    imports: [HttpModule, CurrencyModule],
+    providers: [ParserService],
+    exports: [ParserService]
 })
 export class ParserModule { }

@@ -1,12 +1,31 @@
-import { Module } from "@nestjs/common"
+import { Module, HttpModule } from "@nestjs/common"
+import { TypeOrmModule } from "@nestjs/typeorm"
+
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
-import { ParserModule } from './parser/parser.module'
+import { User } from "./user/user.entity"
+import { Currency } from "./currency/currency.entity"
+import { CurrencyModule } from "./currency/currency.module"
+import { ParserModule } from "./parser/parser.module"
+import { UserModule } from "./user/user.module"
+
 
 @Module({
   imports: [
-    ParserModule
-  ],
+    TypeOrmModule.forRoot({
+      type: "mongodb",
+      url: "mongodb://localhost:27017",
+      database: "my_db1",
+      entities: [User, Currency],
+      synchronize: true,
+      useUnifiedTopology: true,
+      useNewUrlParser: true
+    }),
+    // AuthModule,
+    HttpModule,
+    CurrencyModule,
+    ParserModule,
+    UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
