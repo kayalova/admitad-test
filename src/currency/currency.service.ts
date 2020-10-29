@@ -11,11 +11,12 @@ export class CurrencyService {
         private readonly currencyRepository: Repository<Currency>
     ) { }
 
-    async getList(): Promise<any> {
-        return await this.currencyRepository.find()
+    async getList(count: number = 10, offset: number = 0): Promise<any> {
+        return await this.currencyRepository.find({ take: count, skip: offset * count })
     }
 
-    async getOne() {
+    async getOne(id: number) {
+        return await this.currencyRepository.findOne({ id })
     }
 
     async create(currency: ICurrency) {

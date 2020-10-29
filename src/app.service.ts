@@ -8,7 +8,5 @@ export class AppService {
 		const xmlStr = await this.parserService.getXML("http://www.cbr.ru/scripts/XML_daily.asp")
 		const list = await this.parserService.parseXML(xmlStr)
 		await this.parserService.saveXMLToDB(list)
-
-
 	}
 }
