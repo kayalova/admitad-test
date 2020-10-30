@@ -9,10 +9,13 @@ export class CurrencyService {
     constructor(
         @InjectRepository(Currency)
         private readonly currencyRepository: Repository<Currency>
-    ) { }
+    ) {}
 
     async getList(count = 10, offset = 0): Promise<any> {
-        return await this.currencyRepository.find({ take: count, skip: offset * count })
+        return await this.currencyRepository.find({
+            take: count,
+            skip: offset * count
+        })
     }
 
     async getOne(id: string) {
@@ -28,7 +31,6 @@ export class CurrencyService {
         c.value = currency.value
         return await this.currencyRepository.save(c)
     }
-
 
     async removeAll(): Promise<any> {
         return await this.currencyRepository.delete({})

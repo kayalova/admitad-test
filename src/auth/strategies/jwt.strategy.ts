@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from "passport-jwt"
 import { jwtConstants } from "../../constants/jwt"
 import { AuthService } from "../auth.service"
 import { User } from "../../user/user.entity"
-import { serverResponse } from '../../constants/responses'
+import { serverResponse } from "../../constants/responses"
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -12,14 +12,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: jwtConstants.secret,
+            secretOrKey: jwtConstants.secret
         })
     }
 
     async validate(payload: any): Promise<User> {
         const user = await this.authService.validateUser(payload.user)
         if (!user) {
-            throw new HttpException(serverResponse.UNAUTHORIZED, HttpStatus.UNAUTHORIZED)
+            throw new HttpException(
+                serverResponse.UNAUTHORIZED,
+                HttpStatus.UNAUTHORIZED
+            )
         }
         return user
     }

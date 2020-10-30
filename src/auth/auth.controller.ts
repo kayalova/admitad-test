@@ -1,5 +1,11 @@
 import { Post, Controller, Body } from "@nestjs/common"
-import { ApiOperation, ApiTags, ApiCreatedResponse, ApiBadRequestResponse, ApiOkResponse } from "@nestjs/swagger"
+import {
+    ApiOperation,
+    ApiTags,
+    ApiCreatedResponse,
+    ApiBadRequestResponse,
+    ApiOkResponse
+} from "@nestjs/swagger"
 import { AuthService } from "./auth.service"
 import { UserDto } from "../user/dto/index.dto"
 import { serverResponse } from "../constants/responses"
@@ -7,8 +13,7 @@ import { serverResponse } from "../constants/responses"
 @ApiTags("authentication")
 @Controller("auth")
 export class AuthController {
-
-    constructor(private readonly authService: AuthService) { }
+    constructor(private readonly authService: AuthService) {}
 
     @ApiOperation({ summary: "Login user" })
     @ApiOkResponse()
@@ -19,12 +24,14 @@ export class AuthController {
     }
 
     @ApiOperation({ summary: "Register user" })
-    @ApiCreatedResponse({ description: serverResponse.SUCCESSFULLY_CREATED_USER })
-    @ApiBadRequestResponse({ description: serverResponse.ALREADY_REGISTERED_USER })
+    @ApiCreatedResponse({
+        description: serverResponse.SUCCESSFULLY_CREATED_USER
+    })
+    @ApiBadRequestResponse({
+        description: serverResponse.ALREADY_REGISTERED_USER
+    })
     @Post("signup")
     async signup(@Body() user: UserDto) {
         return await this.authService.signup(user)
     }
-
 }
-

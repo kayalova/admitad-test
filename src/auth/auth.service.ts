@@ -9,13 +9,16 @@ import { serverResponse } from "../constants/responses"
 export class AuthService {
     constructor(
         private userService: UserService,
-        private jwtService: JwtService,
-    ) { }
+        private jwtService: JwtService
+    ) {}
 
     async signup(user: UserDto) {
         const isExists = await this.userService.findByEmail(user.email)
         if (isExists) {
-            throw new HttpException(serverResponse.ALREADY_REGISTERED_USER, HttpStatus.BAD_REQUEST)
+            throw new HttpException(
+                serverResponse.ALREADY_REGISTERED_USER,
+                HttpStatus.BAD_REQUEST
+            )
         }
 
         await this.userService.create(user)
@@ -26,16 +29,17 @@ export class AuthService {
     async signin(user: UserDto) {
         const neededUser = await this.userService.findOne(user)
         if (!neededUser) {
-            throw new HttpException(serverResponse.INVALID_INPUT_DATA, HttpStatus.BAD_REQUEST)
+            throw new HttpException(
+                serverResponse.INVALID_INPUT_DATA,
+                HttpStatus.BAD_REQUEST
+            )
         }
 
         const payload = { user: user.email }
         return { access_token: this.jwtService.sign(payload) }
     }
 
-
     async validateUser(email: string): Promise<User> {
         return await this.userService.findByEmail(email)
     }
-
 }

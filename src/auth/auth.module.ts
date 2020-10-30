@@ -7,18 +7,17 @@ import { AuthService } from "./auth.service"
 import { jwtConstants } from "../constants/jwt"
 import { JwtStrategy } from "./strategies/jwt.strategy"
 
-
 @Module({
-  imports: [
-    UserModule,
-    PassportModule.register({ defaultStrategy: "jwt" }),
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: "12h" },
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService]
+    imports: [
+        UserModule,
+        PassportModule.register({ defaultStrategy: "jwt" }),
+        JwtModule.register({
+            secret: jwtConstants.secret,
+            signOptions: { expiresIn: "12h" }
+        })
+    ],
+    controllers: [AuthController],
+    providers: [AuthService, JwtStrategy],
+    exports: [AuthService]
 })
-export class AuthModule { }
+export class AuthModule {}

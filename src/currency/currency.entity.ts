@@ -3,7 +3,6 @@ import { CurrencyDto } from "./dto/index.dto"
 
 @Entity()
 export class Currency implements CurrencyDto {
-
     @ObjectIdColumn()
     objectID: ObjectID
 
@@ -12,7 +11,6 @@ export class Currency implements CurrencyDto {
 
     @Column()
     numcode: number
-
 
     @Column()
     charCode: string
@@ -25,5 +23,4 @@ export class Currency implements CurrencyDto {
 
     @Column()
     value: string
-
 }

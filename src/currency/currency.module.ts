@@ -5,12 +5,9 @@ import { CurrencyService } from "./currency.service"
 import { Currency } from "./currency.entity"
 
 @Module({
-  imports: [
-    HttpModule,
-    TypeOrmModule.forFeature([Currency])
-  ],
-  controllers: [CurrencyController],
-  providers: [CurrencyService],
-  exports: [CurrencyService]
+    imports: [HttpModule, TypeOrmModule.forFeature([Currency])],
+    controllers: [CurrencyController],
+    providers: [CurrencyService],
+    exports: [CurrencyService]
 })
-export class CurrencyModule { }
+export class CurrencyModule {}
