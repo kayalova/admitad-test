@@ -1,7 +1,8 @@
 import { Injectable, HttpService } from "@nestjs/common"
 import { parseString } from "xml2js"
 import { CurrencyService } from "../currency/currency.service"
-import { ICurrency } from "../currency/dto/index.dto"
+import { CurrencyDto } from "../currency/dto/index.dto"
+import { parsedXML } from './parsedXML'
 
 @Injectable()
 export class ParserService {
@@ -14,22 +15,21 @@ export class ParserService {
         return (await this.httpService.get(url).toPromise()).data
     }
 
-    parseXML(xmlString: string): Promise<Array<ICurrency>> {
+    parseXML(xmlString: string): Promise<Array<CurrencyDto>> {
         return new Promise((resolve, reject) => {
 
-            parseString(xmlString, function (err, res) {
+            parseString(xmlString, function (err: any, res: any) {
+
                 if (err) reject(err)
-
                 const arr = res.ValCurs.Valute
-                const list = arr.reduce((list, obj) => {
-
-                    const currency: ICurrency = {
-                        id: obj["$"]["ID"],
-                        numcode: obj.NumCode[0],
-                        charCode: obj.CharCode[0],
-                        nominal: obj.Nominal[0],
-                        name: obj.Name[0],
-                        value: obj.Value[0]
+                const list = arr.reduce((list: Array<CurrencyDto>, xmlObject: parsedXML) => {
+                    const currency: CurrencyDto = {
+                        id: xmlObject["$"]["ID"],
+                        numcode: xmlObject.NumCode[0],
+                        charCode: xmlObject.CharCode[0],
+                        nominal: xmlObject.Nominal[0],
+                        name: xmlObject.Name[0],
+                        value: xmlObject.Value[0]
                     }
 
                     list.push(currency)
@@ -41,12 +41,8 @@ export class ParserService {
         })
     }
 
-    async saveXMLToDB(currencyList: Array<ICurrency>): Promise<void> {
+    async saveXMLToDB(currencyList: Array<CurrencyDto>): Promise<void> {
         currencyList.forEach(async cur => await this.currencyService.create(cur))
-
-        // // checking
-        // const a = await this.currencyService.getList()
-        // console.log("records: ", a)
     }
 
 }

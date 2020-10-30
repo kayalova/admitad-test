@@ -23,5 +23,6 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     "semi": [2, "never"],
     "quotes": [2, "double"],
+    "max-len": ["error", { "code": 120 }]
   },
 };

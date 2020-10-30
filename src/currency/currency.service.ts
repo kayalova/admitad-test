@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import { Currency } from "./currency.entity"
-import { ICurrency } from "./dto/index.dto"
+import { CurrencyDto } from "./dto/index.dto"
 
 @Injectable()
 export class CurrencyService {
@@ -15,11 +15,11 @@ export class CurrencyService {
         return await this.currencyRepository.find({ take: count, skip: offset * count })
     }
 
-    async getOne(id: number) {
+    async getOne(id: string) {
         return await this.currencyRepository.findOne({ id })
     }
 
-    async create(currency: ICurrency) {
+    async create(currency: CurrencyDto) {
         const c = new Currency()
         c.id = currency.id
         c.name = currency.name
@@ -27,5 +27,10 @@ export class CurrencyService {
         c.numcode = currency.numcode
         c.value = currency.value
         return await this.currencyRepository.save(c)
+    }
+
+
+    async removeAll(): Promise<any> {
+        return await this.currencyRepository.delete({})
     }
 }

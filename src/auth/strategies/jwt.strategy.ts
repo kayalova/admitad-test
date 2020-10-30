@@ -1,9 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common"
 import { PassportStrategy } from "@nestjs/passport"
 import { ExtractJwt, Strategy } from "passport-jwt"
-import { jwtConstants } from "../constants"
+import { jwtConstants } from "../../constants/jwt"
 import { AuthService } from "../auth.service"
 import { User } from "../../user/user.entity"
+import { serverResponse } from '../../constants/responses'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,11 +17,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any): Promise<User> {
-        console.log("payload: ", payload)
         const user = await this.authService.validateUser(payload.user)
-        console.log(user)
         if (!user) {
-            throw new HttpException("Invalid token or not provided", HttpStatus.UNAUTHORIZED)
+            throw new HttpException(serverResponse.UNAUTHORIZED, HttpStatus.UNAUTHORIZED)
         }
         return user
     }

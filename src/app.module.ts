@@ -1,4 +1,4 @@
-import { Module, HttpModule } from "@nestjs/common"
+import { Module } from "@nestjs/common"
 import { TypeOrmModule } from "@nestjs/typeorm"
 
 import { AppController } from "./app.controller"
@@ -23,7 +23,6 @@ import { AuthModule } from "./auth/auth.module"
       useNewUrlParser: true
     }),
     AuthModule,
-    HttpModule,
     CurrencyModule,
     ParserModule,
     UserModule],
