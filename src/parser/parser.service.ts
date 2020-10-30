@@ -13,12 +13,18 @@ export class ParserService {
         @InjectQueue("queue-1") private parserQueue: Queue,
         private httpService: HttpService,
         private currencyService: CurrencyService
-    ) {}
+    ) { }
 
     async addJobToQueue() {
-        await this.parserQueue.add("getXMLURL", {
-            xmlURL: "http://www.cbr.ru/scripts/XML_daily.asp"
-        })
+        await this.parserQueue.add("getXMLURL",
+            {
+                xmlURL: "http://www.cbr.ru/scripts/XML_daily.asp"
+            },
+            {
+                repeat: {
+                    cron: '1 * * * *' // every min
+                }
+            })
     }
 
     async getXML(url: string): Promise<any> {
@@ -32,11 +38,10 @@ export class ParserService {
 
     parseXML(xmlString: string): Promise<Array<CurrencyDto>> {
         const Iconv = require("iconv").Iconv
-        const conv = Iconv("windows-1251", "utf8")
+        const conv = new Iconv("windows-1251", "utf8")
         const r = conv.convert(xmlString).toString()
-        // console.log("result ", r) // whyy
         return new Promise((resolve, reject) => {
-            parseString(r, function(err: any, res: any) {
+            parseString(r, function (err: any, res: any) {
                 if (err) reject(err)
                 const arr = res.ValCurs.Valute
                 const list = arr.reduce(
@@ -62,7 +67,7 @@ export class ParserService {
     }
 
     async updateDBwithXML(currencyList: Array<CurrencyDto>): Promise<void> {
-        this.currencyService.removeAll()
+        await this.currencyService.removeAll()
         currencyList.forEach(
             async cur => await this.currencyService.create(cur)
         )
