@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { Repository } from "typeorm"
+import { Repository, getMongoRepository } from "typeorm"
+
 import { Currency } from "./currency.entity"
 import { CurrencyDto } from "./dto/index.dto"
 
@@ -9,9 +10,9 @@ export class CurrencyService {
     constructor(
         @InjectRepository(Currency)
         private readonly currencyRepository: Repository<Currency>
-    ) {}
+    ) { }
 
-    async getList(count = 10, offset = 0): Promise<any> {
+    async getList(count = 10, offset = 0): Promise<Array<Currency>> {
         return await this.currencyRepository.find({
             take: count,
             skip: offset * count
@@ -22,7 +23,7 @@ export class CurrencyService {
         return await this.currencyRepository.findOne({ id })
     }
 
-    async create(currency: CurrencyDto) {
+    async create(currency: CurrencyDto): Promise<Currency> {
         const c = new Currency()
         c.id = currency.id
         c.name = currency.name
@@ -33,6 +34,7 @@ export class CurrencyService {
     }
 
     async removeAll(): Promise<any> {
-        return await this.currencyRepository.delete({})
+        const cRepository = getMongoRepository(Currency)
+        await cRepository.deleteMany({})
     }
 }

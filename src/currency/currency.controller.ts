@@ -16,6 +16,7 @@ import {
     ApiOkResponse,
     ApiUnauthorizedResponse
 } from "@nestjs/swagger"
+
 import { CurrencyService } from "./currency.service"
 import { JwtAuthGuard } from "../auth/jwt-auth.guard"
 import { serverResponse } from "../constants/responses"
@@ -29,7 +30,7 @@ import { serverResponse } from "../constants/responses"
 @ApiBearerAuth()
 @Controller()
 export class CurrencyController {
-    constructor(private currencyService: CurrencyService) {}
+    constructor(private currencyService: CurrencyService) { }
 
     @ApiQuery({
         name: "offset",

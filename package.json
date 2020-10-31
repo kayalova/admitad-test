@@ -51,6 +51,7 @@
     "@nestjs/testing": "^7.0.0",
     "@types/bull": "^3.14.4",
     "@types/express": "^4.17.3",
+    "@types/iconv": "^2.1.16",
     "@types/jest": "26.0.10",
     "@types/mongoose": "^5.7.36",
     "@types/node": "^13.9.1",

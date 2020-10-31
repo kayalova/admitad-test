@@ -1,6 +1,6 @@
 module.exports = {
     apps: [{
-        name: 'my-app',
+        name: 'admitad-test',
         script: 'dist/main.js',
         autorestart: true,
         out_file: './out.log',

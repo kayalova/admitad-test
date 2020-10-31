@@ -1,11 +1,12 @@
 import { Injectable, HttpService } from "@nestjs/common"
+import { InjectQueue } from "@nestjs/bull"
+import { Queue } from "bull"
 import { parseString } from "xml2js"
+
+import { parsedXML } from "./parsedXML"
 import { CurrencyService } from "../currency/currency.service"
 import { CurrencyDto } from "../currency/dto/index.dto"
-import { parsedXML } from "./parsedXML"
 
-import { Queue } from "bull"
-import { InjectQueue } from "@nestjs/bull"
 
 @Injectable()
 export class ParserService {
@@ -16,33 +17,37 @@ export class ParserService {
     ) { }
 
     async addJobToQueue() {
+        await this.parserQueue.empty()
+        await this.parserQueue.add("getXMLURL", { xmlURL: "http://www.cbr.ru/scripts/XML_daily.asp" }) // to run right after application started
         await this.parserQueue.add("getXMLURL",
             {
                 xmlURL: "http://www.cbr.ru/scripts/XML_daily.asp"
             },
             {
                 repeat: {
-                    cron: '1 * * * *' // every min
+                    cron: "* * * * *" // from new min started and every min after
                 }
             })
     }
 
-    async getXML(url: string): Promise<any> {
-        const a = (
+    async getXMLBuffer(url: string): Promise<any> {
+        return (
             await this.httpService
                 .get(url, { responseType: "arraybuffer" })
                 .toPromise()
         ).data
-        return a.toString("utf-8")
     }
 
-    parseXML(xmlString: string): Promise<Array<CurrencyDto>> {
+    parseXML(xmlBuffer: string): Promise<Array<CurrencyDto>> {
         const Iconv = require("iconv").Iconv
         const conv = new Iconv("windows-1251", "utf8")
-        const r = conv.convert(xmlString).toString()
+        const xmlString = conv.convert(xmlBuffer).toString()
+
+
         return new Promise((resolve, reject) => {
-            parseString(r, function (err: any, res: any) {
+            parseString(xmlString, function (err: any, res: any) {
                 if (err) reject(err)
+
                 const arr = res.ValCurs.Valute
                 const list = arr.reduce(
                     (list: Array<CurrencyDto>, xmlObject: parsedXML) => {

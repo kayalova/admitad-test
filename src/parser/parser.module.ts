@@ -1,8 +1,8 @@
 import { Module, HttpModule } from "@nestjs/common"
+import { BullModule } from "@nestjs/bull"
+
 import { ParserService } from "./parser.service"
 import { CurrencyModule } from "../currency/currency.module"
-
-import { BullModule } from "@nestjs/bull"
 import { ParserConsumer } from "./parser.processor"
 
 @Module({
@@ -20,4 +20,4 @@ import { ParserConsumer } from "./parser.processor"
     providers: [ParserService, ParserConsumer],
     exports: [ParserService]
 })
-export class ParserModule {}
+export class ParserModule { }

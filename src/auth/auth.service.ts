@@ -1,5 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
+
 import { UserService } from "../user/user.service"
 import { UserDto } from "../user/dto/index.dto"
 import { User } from "../user/user.entity"
@@ -10,7 +11,7 @@ export class AuthService {
     constructor(
         private userService: UserService,
         private jwtService: JwtService
-    ) {}
+    ) { }
 
     async signup(user: UserDto) {
         const isExists = await this.userService.findByEmail(user.email)

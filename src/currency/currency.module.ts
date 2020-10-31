@@ -1,5 +1,6 @@
 import { Module, HttpModule } from "@nestjs/common"
 import { TypeOrmModule } from "@nestjs/typeorm"
+
 import { CurrencyController } from "./currency.controller"
 import { CurrencyService } from "./currency.service"
 import { Currency } from "./currency.entity"
@@ -10,4 +11,4 @@ import { Currency } from "./currency.entity"
     providers: [CurrencyService],
     exports: [CurrencyService]
 })
-export class CurrencyModule {}
+export class CurrencyModule { }
