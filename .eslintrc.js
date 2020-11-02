@@ -22,7 +22,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     "semi": [2, "never"],
-    "quotes": [2, "double"],
+    "quotes": [2, "single"], //medium: используем одинарные!
     "max-len": ["error", { "code": 120 }]
   },
 };
