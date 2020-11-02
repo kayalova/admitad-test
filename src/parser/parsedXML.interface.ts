@@ -1,4 +1,5 @@
-export type parsedXML = {
+// low: Лучше называть такие вещи интерфейсами
+export type parsedXMLInterface = {
     $: { ID: string }
     NumCode: Array<number>
     CharCode: Array<string>

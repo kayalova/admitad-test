@@ -6,7 +6,7 @@ import {
     UseGuards,
     HttpException,
     HttpStatus
-} from "@nestjs/common"
+} from '@nestjs/common'
 import {
     ApiOperation,
     ApiBearerAuth,
@@ -15,40 +15,41 @@ import {
     ApiHeader,
     ApiOkResponse,
     ApiUnauthorizedResponse
-} from "@nestjs/swagger"
+} from '@nestjs/swagger'
 
-import { CurrencyService } from "./currency.service"
-import { JwtAuthGuard } from "../auth/jwt-auth.guard"
-import { serverResponse } from "../constants/responses"
+import { CurrencyService } from './currency.service'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { serverResponse } from '../constants/responses'
 
 @ApiHeader({
-    name: "Authorization",
-    description: "Authorization Bearer token",
+    name: 'Authorization',
+    description: 'Authorization Bearer token',
     required: true
 })
-@ApiTags("currency")
+@ApiTags('currency')
 @ApiBearerAuth()
 @Controller()
+// medium: Для  каждого route лучше описать schema возвращаемого объекта в swagger
 export class CurrencyController {
     constructor(private currencyService: CurrencyService) { }
 
     @ApiQuery({
-        name: "offset",
+        name: 'offset',
         required: false,
-        description: "currencies to skip",
+        description: 'currencies to skip',
         type: Number
     })
     @ApiQuery({
-        name: "limit",
+        name: 'limit',
         required: false,
-        description: "currencies to take",
+        description: 'currencies to take',
         type: Number
     })
-    @ApiOperation({ summary: "Get currencies" })
+    @ApiOperation({ summary: 'Get currencies' })
     @ApiOkResponse()
     @ApiUnauthorizedResponse()
     @UseGuards(JwtAuthGuard)
-    @Get("/currencies")
+    @Get('/currencies')
     async getCurrencyList(
         @Query() query: { offset: number | string; limit: number | string }
     ) {
@@ -56,11 +57,11 @@ export class CurrencyController {
         return await this.currencyService.getList(Number(limit), Number(offset))
     }
 
-    @ApiOperation({ summary: "Get single currency" })
+    @ApiOperation({ summary: 'Get single currency' })
     @ApiOkResponse()
-    @ApiUnauthorizedResponse({ description: "Unathorized" })
+    @ApiUnauthorizedResponse({ description: 'Unathorized' })
     @UseGuards(JwtAuthGuard)
-    @Get("/currency/:id")
+    @Get('/currency/:id')
     async getCurrency(@Param() params: { id: string }) {
         if (!params || !params.id)
             throw new HttpException(
