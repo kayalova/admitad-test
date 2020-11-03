@@ -6,9 +6,11 @@ import {
     ApiBadRequestResponse,
     ApiOkResponse
 } from '@nestjs/swagger'
-//low: Best practice - разделять импорты по группам
+// Services 
 import { AuthService } from './auth.service'
+// Dto 
 import { UserDto } from '../user/dto/index.dto'
+// Constants 
 import { serverResponse } from '../constants/responses'
 
 // medium: Для  каждого route лучше описать schema возвращаемого объекта в swagger

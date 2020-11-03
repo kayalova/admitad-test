@@ -1,4 +1,5 @@
 import { Entity, Column, ObjectID, ObjectIdColumn } from "typeorm"
+//Dto
 import { CurrencyDto } from "./dto/index.dto"
 
 @Entity()

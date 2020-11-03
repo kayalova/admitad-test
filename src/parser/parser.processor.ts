@@ -1,7 +1,7 @@
 import { Process, Processor } from '@nestjs/bull'
 import { Logger } from '@nestjs/common'
 import { Job } from 'bull'
-
+// Services
 import { ParserService } from './parser.service'
 
 @Processor('queue-1')

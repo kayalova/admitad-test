@@ -1,9 +1,11 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
-
+// Entities
 import { User } from "./user.entity"
+// Dto
 import { UserDto } from "./dto/index.dto"
+// utils
 import * as utils from "../utils"
 
 @Injectable()

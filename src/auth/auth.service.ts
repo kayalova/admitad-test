@@ -1,9 +1,12 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-//low: Best practice - разделять импорты по группам
+// Services 
 import { UserService } from '../user/user.service'
+// Dto 
 import { UserDto } from '../user/dto/index.dto'
+// Entities 
 import { User } from '../user/user.entity'
+// Constants 
 import { serverResponse } from '../constants/responses'
 
 @Injectable()
@@ -13,7 +16,9 @@ export class AuthService {
         private jwtService: JwtService
     ) { }
 
-    //low: Best practice - jsDoc для метода
+    /**
+     * @param  {UserDto} user
+     */
     async signup(user: UserDto) {
         const isExists = await this.userService.findByEmail(user.email)
         if (isExists) {
@@ -28,7 +33,9 @@ export class AuthService {
         return { access_token: this.jwtService.sign(payload) }
     }
 
-    //low: Best practice - jsDoc для метода
+    /**
+     * @param  {UserDto} user
+     */
     async signin(user: UserDto) {
         const neededUser = await this.userService.findOne(user)
         if (!neededUser) {
@@ -42,7 +49,10 @@ export class AuthService {
         return { access_token: this.jwtService.sign(payload) }
     }
 
-    //low: Best practice - jsDoc для метода
+    /**
+     * @param  {string} email
+     * @returns Promise
+     */
     async validateUser(email: string): Promise<User> {
         return await this.userService.findByEmail(email)
     }

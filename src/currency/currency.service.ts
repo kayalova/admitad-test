@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository, getMongoRepository } from 'typeorm'
-//low: Best practice - разделять импорты по группам
 // Entity
 import { Currency } from './currency.entity'
 // DTO
@@ -14,7 +13,11 @@ export class CurrencyService {
         private readonly currencyRepository: Repository<Currency>
     ) { }
 
-    //low: Best practice - jsDoc для метода
+    /**
+     * @param  {} count=10
+     * @param  {} offset=0
+     * @returns Promise
+     */
     async getList(count = 10, offset = 0): Promise<Array<Currency>> {
         return await this.currencyRepository.find({
             take: count,
@@ -22,12 +25,14 @@ export class CurrencyService {
         })
     }
 
-    //low: Best practice - jsDoc для метода
-    async getOne(id: string) {
+    /**
+     * @param  {string} id
+     * @returns Promise
+     */
+    async getOne(id: string): Promise<Currency> {
         return await this.currencyRepository.findOne({ id })
     }
 
-   //low: Best practice - jsDoc для метода
     async create(currency: CurrencyDto): Promise<Currency> {
         const c = new Currency()
         c.id = currency.id
@@ -38,7 +43,9 @@ export class CurrencyService {
         return await this.currencyRepository.save(c)
     }
 
-    //low: Best practice - jsDoc для метода
+    /**
+     * @returns Promise
+     */
     async removeAll(): Promise<any> {
         const cRepository = getMongoRepository(Currency)
         await cRepository.deleteMany({})

@@ -1,9 +1,8 @@
-import { Injectable, HttpService } from '@nestjs/common'
+import { Injectable, HttpService, OnModuleInit } from '@nestjs/common'
 import { InjectQueue } from '@nestjs/bull'
 import { Queue } from 'bull'
 import { parseString } from 'xml2js'
-import Iconv from 'iconv'
-//low: Best practice - разделять импорты по группам
+import { decode } from 'iconv-lite'
 // Interfaces
 import { parsedXMLInterface } from './parsedXML.interface'
 // Services
@@ -13,17 +12,15 @@ import { CurrencyDto } from '../currency/dto/index.dto'
 
 
 @Injectable()
-export class ParserService {
+export class ParserService implements OnModuleInit {
     constructor(
         @InjectQueue('queue-1') private parserQueue: Queue,
         private httpService: HttpService,
         private currencyService: CurrencyService
-    ) {
-    }
+    ) { }
 
-    async addJobToQueue() {
+    async onModuleInit() {
         await this.parserQueue.empty()
-        // medium: Можно перенести в onModuleInit
         await this.parserQueue.add('getXMLURL', { xmlURL: 'http://www.cbr.ru/scripts/XML_daily.asp' }) // to run right after application started
         await this.parserQueue.add('getXMLURL',
             {
@@ -36,6 +33,10 @@ export class ParserService {
             })
     }
 
+    /**
+     * @param  {string} url
+     * @returns Promise
+     */
     async getXMLBuffer(url: string): Promise<any> {
         return (
             await this.httpService
@@ -44,15 +45,15 @@ export class ParserService {
         ).data
     }
 
-    //low: Best practice - jsDoc для метода
-    parseXML(xmlBuffer: string): Promise<Array<CurrencyDto>> {
-        // medium: Iconv импортировать как описал выше либо если используешь последние фичи ts то можно импортировать прямо тут
-        const conv = new Iconv('windows-1251', 'utf8')
-        const xmlString = conv.convert(xmlBuffer).toString()
-
+    /**
+     * @param  {Buffer} xmlBuffer
+     * @returns Promise
+     */
+    parseXML(xmlBuffer: Buffer): Promise<Array<CurrencyDto>> {
+        const xmlString = decode(xmlBuffer, 'win-1251')
 
         return new Promise((resolve, reject) => {
-            parseString(xmlString, function(err: any, res: any) {
+            parseString(xmlString, function (err: any, res: any) {
                 if (err) reject(err)
 
                 const arr = res.ValCurs.Valute
@@ -78,10 +79,12 @@ export class ParserService {
         })
     }
 
-    //low: Best practice - jsDoc для метода
+    /**
+     * @param  {Array<CurrencyDto>} currencyList
+     * @returns Promise
+     */
     async updateDBwithXML(currencyList: Array<CurrencyDto>): Promise<void> {
         await this.currencyService.removeAll()
-        // medium предыдущий код не будет работать асинхронно, итерировать асинхронно нужно через for...of
         for (const cur of currencyList) {
             await this.currencyService.create(cur)
         }
