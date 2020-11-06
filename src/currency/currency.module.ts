@@ -1,14 +1,14 @@
-import { Module, HttpModule } from "@nestjs/common"
-import { TypeOrmModule } from "@nestjs/typeorm"
+import { HttpModule, Module } from "@nestjs/common";
+import { MongooseModule } from '@nestjs/mongoose';
 // Controllers 
-import { CurrencyController } from "./currency.controller"
-// Services 
-import { CurrencyService } from "./currency.service"
+import { CurrencyController } from "./currency.controller";
 // Entities 
-import { Currency } from "./currency.entity"
+import { CurrencySchema } from "./currency.schema";
+// Services 
+import { CurrencyService } from "./currency.service";
 
 @Module({
-    imports: [HttpModule, TypeOrmModule.forFeature([Currency])],
+    imports: [HttpModule, MongooseModule.forFeature([{ name: 'Currency', schema: CurrencySchema }])],
     controllers: [CurrencyController],
     providers: [CurrencyService],
     exports: [CurrencyService]

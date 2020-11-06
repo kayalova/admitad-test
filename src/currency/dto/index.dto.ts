@@ -1,4 +1,4 @@
-export class CurrencyDto {
+export interface CurrencyDto {
     id: string
     numcode: number
     charCode: string

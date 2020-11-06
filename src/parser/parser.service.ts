@@ -1,14 +1,14 @@
-import { Injectable, HttpService, OnModuleInit } from '@nestjs/common'
 import { InjectQueue } from '@nestjs/bull'
+import { HttpService, Injectable, OnModuleInit } from '@nestjs/common'
 import { Queue } from 'bull'
-import { parseString } from 'xml2js'
 import { decode } from 'iconv-lite'
-// Interfaces
-import { parsedXMLInterface } from './parsedXML.interface'
+import { parseString } from 'xml2js'
 // Services
 import { CurrencyService } from '../currency/currency.service'
 // DTO
 import { CurrencyDto } from '../currency/dto/index.dto'
+// Interfaces
+import { parsedXMLInterface } from './parsedXML.interface'
 
 
 @Injectable()

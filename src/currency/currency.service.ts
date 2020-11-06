@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Repository, getMongoRepository } from 'typeorm'
+import { InjectModel } from '@nestjs/mongoose'
+import { Model } from 'mongoose'
 // Entity
-import { Currency } from './currency.entity'
+import { Currency, CurrencyDocument } from './currency.schema'
 // DTO
 import { CurrencyDto } from './dto/index.dto'
 
 @Injectable()
 export class CurrencyService {
     constructor(
-        @InjectRepository(Currency)
-        private readonly currencyRepository: Repository<Currency>
+        @InjectModel('Currency')
+        private readonly currencyModel: Model<CurrencyDocument>
     ) { }
 
     /**
@@ -19,10 +19,7 @@ export class CurrencyService {
      * @returns Promise
      */
     async getList(count = 10, offset = 0): Promise<Array<Currency>> {
-        return await this.currencyRepository.find({
-            take: count,
-            skip: offset * count
-        })
+        return await this.currencyModel.find().limit(count).skip(offset)
     }
 
     /**
@@ -30,24 +27,21 @@ export class CurrencyService {
      * @returns Promise
      */
     async getOne(id: string): Promise<Currency> {
-        return await this.currencyRepository.findOne({ id })
+        return await this.currencyModel.findById(id)
     }
 
-    async create(currency: CurrencyDto): Promise<Currency> {
-        const c = new Currency()
-        c.id = currency.id
-        c.name = currency.name
-        c.nominal = currency.nominal
-        c.numcode = currency.numcode
-        c.value = currency.value
-        return await this.currencyRepository.save(c)
+    async create(currency: CurrencyDto): Promise<CurrencyDocument> {
+        return await new this.currencyModel(currency).save()
     }
 
     /**
      * @returns Promise
      */
     async removeAll(): Promise<any> {
-        const cRepository = getMongoRepository(Currency)
-        await cRepository.deleteMany({})
+        await this.currencyModel.deleteMany({})
     }
 }
+
+/*
+
+*/

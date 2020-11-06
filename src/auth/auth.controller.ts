@@ -10,32 +10,35 @@ import {
 import { AuthService } from './auth.service'
 // Dto 
 import { UserDto } from '../user/dto/index.dto'
+import { AccessTokenDto } from './dto/index.dto'
 // Constants 
-import { serverResponse } from '../constants/responses'
+import { serverResponseInterface } from './authResponse.interface'
 
-// medium: Для  каждого route лучше описать schema возвращаемого объекта в swagger
 @ApiTags('authentication')
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
     @ApiOperation({ summary: 'Login user' })
-    @ApiOkResponse()
-    @ApiBadRequestResponse({ description: serverResponse.INVALID_INPUT_DATA })
+    @ApiOkResponse({ type: AccessTokenDto })
+    @ApiBadRequestResponse({ description: serverResponseInterface.INVALID_INPUT_DATA })
     @Post('signin')
-    async signin(@Body() user: UserDto) {
-        return await this.authService.signin(user)
+    async signin(@Body() user: UserDto): Promise<AccessTokenDto> {
+        const token = await this.authService.signin(user)
+        return { accessToken: token }
     }
 
     @ApiOperation({ summary: 'Register user' })
     @ApiCreatedResponse({
-        description: serverResponse.SUCCESSFULLY_CREATED_USER
+        type: AccessTokenDto,
+        description: serverResponseInterface.SUCCESSFULLY_CREATED_USER
     })
     @ApiBadRequestResponse({
-        description: serverResponse.ALREADY_REGISTERED_USER
+        description: serverResponseInterface.ALREADY_REGISTERED_USER
     })
     @Post('signup')
-    async signup(@Body() user: UserDto) {
-        return await this.authService.signup(user)
+    async signup(@Body() user: UserDto): Promise<AccessTokenDto> {
+        const token = await this.authService.signup(user)
+        return { accessToken: token }
     }
 }

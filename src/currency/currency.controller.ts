@@ -21,7 +21,8 @@ import { CurrencyService } from './currency.service'
 // Guards 
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 // Constants 
-import { serverResponse } from '../constants/responses'
+import { serverResponseInterface } from '../auth/authResponse.interface'
+import { Currency } from './currency.schema'
 
 @ApiHeader({
     name: 'Authorization',
@@ -31,7 +32,6 @@ import { serverResponse } from '../constants/responses'
 @ApiTags('currency')
 @ApiBearerAuth()
 @Controller()
-// medium: Для  каждого route лучше описать schema возвращаемого объекта в swagger
 export class CurrencyController {
     constructor(private currencyService: CurrencyService) { }
 
@@ -48,26 +48,26 @@ export class CurrencyController {
         type: Number
     })
     @ApiOperation({ summary: 'Get currencies' })
-    @ApiOkResponse()
+    @ApiOkResponse({ type: Currency, isArray: true })
     @ApiUnauthorizedResponse()
     @UseGuards(JwtAuthGuard)
     @Get('/currencies')
     async getCurrencyList(
         @Query() query: { offset: number | string; limit: number | string }
-    ) {
+    ): Promise<Array<Currency>> {
         const { offset, limit } = query
         return await this.currencyService.getList(Number(limit), Number(offset))
     }
 
     @ApiOperation({ summary: 'Get single currency' })
-    @ApiOkResponse()
+    @ApiOkResponse({ type: Currency })
     @ApiUnauthorizedResponse({ description: 'Unathorized' })
     @UseGuards(JwtAuthGuard)
     @Get('/currency/:id')
-    async getCurrency(@Param() params: { id: string }) {
+    async getCurrency(@Param() params: { id: string }): Promise<Currency> {
         if (!params || !params.id)
             throw new HttpException(
-                serverResponse.PARAMS_REQUIRED,
+                serverResponseInterface.PARAMS_REQUIRED,
                 HttpStatus.BAD_REQUEST
             )
         return await this.currencyService.getOne(params.id)
